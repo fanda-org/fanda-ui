@@ -1,0 +1,39 @@
+name: Publish FandaUI Library
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "projects/fanda-ui/**"
+      - ".github/workflows/publish.yml"
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Set up Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          registry-url: https://npm.pkg.github.com
+
+      # Install dependencies
+      - name: Install Dependencies
+        run: npm install
+
+      # Build the library
+      - name: Build FandaUI Library
+        run: npm run build fanda-ui
+
+      # Publish to GitHub Packages
+      - name: Publish to GitHub Packages
+        run: npm publish dist/fanda-ui --access restricted
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,93 @@
+<form nz-form [formGroup]="formGroup" [ngClass]="class">
+  <ng-container *ngFor="let form of formContainer; trackBy: trackByFn">
+    <div [class]="form.class">
+      <nz-form-item *ngFor="let f of form.formItems">
+        <nz-form-control
+          [nzErrorTip]="
+            getErrorMessage(
+              formGroup.controls[f.formControlName].errors,
+              f.fieldName
+            )
+          "
+        >
+          <input
+            nz-input
+            *ngIf="
+              ['text', 'password', 'email', 'number'].includes(f.controlType)
+            "
+            [type]="f.controlType"
+            [formControlName]="f.formControlName"
+            [value]="f.value"
+            [placeholder]="f.fieldName"
+          />
+          <textarea
+            nz-input
+            *ngIf="f.controlType === 'textarea'"
+            [formControlName]="f.formControlName"
+            [value]="f.value"
+            [placeholder]="f.fieldName"
+          ></textarea>
+          <ng-container *ngIf="f.controlType === 'radio'">
+            <nz-radio-group [formControlName]="f.formControlName">
+              <label
+                *ngFor="let item of f.options"
+                nz-radio
+                [nzValue]="item.value"
+              >
+                {{ item.label }}
+              </label>
+            </nz-radio-group>
+          </ng-container>
+          <ng-container *ngIf="f.controlType === 'checkbox'">
+            <label
+              nz-checkbox
+              [formControlName]="f.formControlName"
+              [nzChecked]="f.value"
+            >
+              {{ f.fieldName }}
+            </label>
+          </ng-container>
+          <nz-select
+            *ngIf="f.controlType === 'select' && f.options"
+            [formControlName]="f.formControlName"
+            [nzShowSearch]="f.config.searchable"
+            [nzPlaceHolder]="f.fieldName"
+          >
+            <nz-option
+              *ngFor="let item of f.options"
+              [nzValue]="item.value"
+              [nzLabel]="item.label"
+            ></nz-option>
+          </nz-select>
+          <nz-select
+            *ngIf="f.controlType === 'multi-select' && f.options"
+            [nzMaxTagCount]="3"
+            [nzMaxTagPlaceholder]="tagPlaceHolder"
+            nzMode="multiple"
+            [formControlName]="f.formControlName"
+            [nzShowSearch]="f.config.searchable"
+            [nzPlaceHolder]="f.fieldName"
+          >
+            <nz-option
+              *ngFor="let item of f.options"
+              [nzValue]="item.value"
+              [nzLabel]="item.label"
+            ></nz-option>
+          </nz-select>
+          <ng-template #tagPlaceHolder let-selectedList>
+            and {{ selectedList.length }} more selected
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </ng-container>
+  <button
+    nz-button
+    nzType="primary"
+    nzBlock
+    (click)="submit()"
+    *ngIf="isSubmit"
+  >
+    Submit
+  </button>
+</form>
