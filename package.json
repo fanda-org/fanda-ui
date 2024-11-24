@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "build:lib": "ng build fanda-ui && npm run copy:npmrc",
+    "copy:npmrc": "cpx \".npmrc\" \"/dist/fanda-ui/\""
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
