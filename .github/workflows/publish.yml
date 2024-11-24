@@ -9,10 +9,13 @@ on:
       - ".github/workflows/publish.yml"
   workflow_dispatch:
 
-jobs:
-  build-and-publish:
-    runs-on: ubuntu-latest
+permissions:
+  contents: read
+  packages: write
 
+jobs:
+  Build:
+    runs-on: ubuntu-latest
     steps:
       # Checkout the repository
       - name: Checkout Repository
@@ -21,9 +24,17 @@ jobs:
       # Set up Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
-        with:
-          node-version: 23
-          registry-url: https://npm.pkg.github.com
+
+        # with:
+        #   node-version: 23
+        #   registry-url: https://npm.pkg.github.com
+
+      - name: Replace {TOKEN} in .npmrc
+        run: |
+          $content = Get-Content -Path .npmrc -Raw
+          $content -replace '{GITHUB_TOKEN}', '${{ secrets.PACKAGE_TOKEN }}'
+          Set-Content -Path .npmrc -Value $content
+        shell: pwsh
 
       # Install dependencies
       - name: Install Dependencies
@@ -33,7 +44,42 @@ jobs:
       - name: Build FandaUI Library
         run: npm run build fanda-ui
 
-      # Publish to GitHub Packages
+      - name: Copy .npmrc
+        run: cpx .npmrc dist/fanda-ui/
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: fanda-ui
+          path: dist/
+
+  PublishNPM:
+    needs: Build
+    if: needs.Build.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: fanda-ui
+
+      - name: Replace {TOKEN} in .npmrc
+        run: |
+          $content = Get-Content -Path .npmrc -Raw
+          $content -replace '{GITHUB_TOKEN}', '${{ secrets.PACKAGE_TOKEN }}'
+          Set-Content -Path .npmrc -Value $content
+        shell: pwsh
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 23
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@fanda-org"
+
       - name: Publish to GitHub Packages
         run: npm publish "dist/fanda-ui/"
         env:
