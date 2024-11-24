@@ -7,6 +7,7 @@ on:
     paths:
       - "projects/fanda-ui/**"
       - ".github/workflows/publish.yml"
+  workflow_dispatch:
 
 jobs:
   build-and-publish:
