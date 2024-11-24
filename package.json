@@ -10,7 +10,7 @@
     "copy:npmrc": "cp \".npmrc\" \"dist/fanda-ui/\""
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://github.com/fanda-org/fanda-ui.git"
   },
   "dependencies": {
     "@angular/animations": "^18.1.0",
