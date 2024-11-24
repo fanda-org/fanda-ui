@@ -12,7 +12,7 @@
     "url": "https://github.com/fanda-org/fanda-ui.git"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://github.com/fanda-org/fanda-ui.git"
   },
   "peerDependencies": {
     "@angular/common": "^18.2.0",
