@@ -70,6 +70,6 @@ jobs:
           scope: "@fanda-org"
 
       - name: Publish to GitHub Packages
-        run: npm publish "dist/fanda-ui/"
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
