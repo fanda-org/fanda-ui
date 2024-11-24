@@ -53,6 +53,9 @@ jobs:
     needs: Build
     if: needs.Build.result == 'success'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -61,6 +64,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: fanda-ui
+
+      - name: Replace {TOKEN} in .npmrc
+        run: |
+          $content = Get-Content -Path .npmrc -Raw
+          $content -replace '{GITHUB_TOKEN}', '${{ secrets.PACKAGE_TOKEN }}'
+          Set-Content -Path .npmrc -Value $content
+        shell: pwsh
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
