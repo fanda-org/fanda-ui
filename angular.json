@@ -9,11 +9,11 @@
       "sourceRoot": "projects/fanda-ui/src",
       "prefix": "lib",
       "architect": {
+        "styles": ["projects/fanda-ui/src/styles.css"],
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/fanda-ui/ng-package.json",
-            "styles": ["projects/fanda-ui/src/styles.css"]
+            "project": "projects/fanda-ui/ng-package.json"
           },
           "configurations": {
             "production": {
